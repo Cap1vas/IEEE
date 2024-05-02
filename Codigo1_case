@@ -1,0 +1,138 @@
+
+int led_vermelho = 7;
+int led_verde = 8;
+int led_amarelo = 5;
+int led_azul= 6;
+int botao1 = 9;
+int botao2 = 10;
+int botao3 =11;
+int botao4=12;
+int estado_botao1;
+int estado_botao2;
+int estado_botao3;
+int estado_botao4;
+int pinos_led[4];
+int pontos_contador =1;
+int pontos_inicial = 1;
+const int pontos_max = 10;
+int sequencia_correta[10] = {0};//Um array pra guardar os valores daquela vez, pode ser utilizado pra verificar se a pessoa acertou a sequencia
+int pts_jogador = 0;
+int sequencia_jogador[10] = {0};// array pra guardar os inputs do jogador
+//Essa funcao serve pra acender os leds aleatoriamente
+
+void exibeSequencia(int pontos){
+  for (int i = 0; i <= pontos; i++)
+  {
+    sequencia_correta[i] = random(led_vermelho,led_amarelo);
+    switch(sequencia_correta[i])
+    {
+      case 7:
+        digitalWrite(led_vermelho,HIGH);
+        delay(500);
+        digitalWrite(led_vermelho,LOW);
+        delay(500);
+        break;
+      case 8:
+        digitalWrite(led_verde,HIGH);
+        delay(500);
+        digitalWrite(led_verde,LOW);
+        delay(500);
+        break;
+      case 6:
+        digitalWrite(led_azul,HIGH);
+        delay(500);
+        digitalWrite(led_azul,LOW);
+        delay(500);
+        break;
+      case 5:
+        digitalWrite(led_amarelo,HIGH);
+        delay(500);
+        digitalWrite(led_amarelo,LOW);
+        delay(500);
+        break;
+      default:
+        break;
+    }
+  }
+  for(int i = 0; i <= pontos; i++)
+  {
+    sequencia_jogador[i] = retornaBtnApertado();
+  }
+  if(sequencia_jogador == sequencia_correta)
+  {
+    pts_jogador++;//cada vez que o loop termina, aumenta o numero de leds que vao ser acesos
+  }
+  else
+  {
+
+  }
+}
+
+int retornaBtnApertado()
+{
+  int btn_pressionado = 0;
+  estado_botao2 = 0;
+  estado_botao1 = 0;
+  estado_botao3 = 0;
+  estado_botao4 = 0;
+  while(btn_pressionado == 0)
+  {
+    estado_botao1 = digitalRead(botao1);
+    estado_botao2 = digitalRead(botao2);
+    estado_botao3 = digitalRead(botao3);
+    estado_botao4 = digitalRead(botao4);
+    if (estado_botao2 == 1)
+    {
+      btn_pressionado = botao2;
+    }
+    else if (estado_botao1 == 1)
+    {
+      btn_pressionado = botao1;
+    }
+    else if (estado_botao3 == 1)
+    {
+      btn_pressionado = botao3;
+    }
+    else if (estado_botao4 == 1)
+    {
+      btn_pressionado = botao4;
+    }
+  }
+  return btn_pressionado;
+}
+void setup()
+{
+  randomSeed(analogRead(0));
+  Serial.begin(9600);
+  pinMode(led_vermelho, OUTPUT);
+  pinMode(led_verde, OUTPUT);
+  pinMode(led_amarelo,OUTPUT);
+  pinMode(led_azul,OUTPUT);
+  pinMode(botao1, INPUT);
+  pinMode(botao2,INPUT);
+  pinMode(botao3,INPUT);
+  pinMode(botao4,INPUT);
+}
+
+void loop()
+{
+ estado_botao2 = digitalRead(botao2);
+ estado_botao1 = digitalRead(botao1);
+ estado_botao3 = digitalRead(botao3);
+ estado_botao4 = digitalRead(botao4);
+ exibeSequencia(pts_jogador);
+ if(pts_jogador == pontos_max)// Se o jogador ganhar
+ {
+      digitalWrite(led_vermelho,HIGH);
+      digitalWrite(led_verde,HIGH);
+      digitalWrite(led_azul,HIGH);
+      digitalWrite(led_amarelo,HIGH);
+      delay(10000);
+      pts_jogador = 1;
+ }
+ for(int i = 0; i < 10; i++)
+ {
+    sequencia_correta[i] = 0;
+    sequencia_jogador[i] = 0;
+ }
+}
